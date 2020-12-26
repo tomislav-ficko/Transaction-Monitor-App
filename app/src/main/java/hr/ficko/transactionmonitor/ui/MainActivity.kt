@@ -1,7 +1,8 @@
-package hr.ficko.transactionmonitor
+package hr.ficko.transactionmonitor.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import hr.ficko.transactionmonitor.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
