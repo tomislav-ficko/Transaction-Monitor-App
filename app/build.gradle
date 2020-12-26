@@ -20,7 +20,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField STRING, API_URL, '"https://c5dc44b36852.ngrok.io"'
+        buildConfigField STRING, API_URL, '"http://mobile.asseco-see.hr"'
     }
 
     buildTypes {
