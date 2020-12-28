@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_side">48dp</dimen>
+    <dimen name="padding_button_next">14dp</dimen>
+    <dimen name="margin_top_entry_field">8dp</dimen>
+    <dimen name="margin_start_entry_field_title">8dp</dimen>
+    <dimen name="height_logo">150dp</dimen>
+    <dimen name="height_entry_field">40dp</dimen>
+    <dimen name="size_title">24sp</dimen>
+    <dimen name="size_title_entry_field">18sp</dimen>
+    <dimen name="radius_btn_register">10dp</dimen>
+</resources>

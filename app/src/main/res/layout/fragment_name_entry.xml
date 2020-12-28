@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:paddingStart="@dimen/padding_side"
+    android:paddingTop="@dimen/padding_side"
+    android:paddingEnd="@dimen/padding_side">
+
+    <ImageView
+        android:id="@+id/tvRegistrationLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_logo"
+        android:src="@drawable/asseco_see_logo"
+        app:layout_constraintBottom_toTopOf="@id/tvRegistrationTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tvRegistrationTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/title_registration"
+        android:textSize="@dimen/size_title"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tvNameTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvRegistrationLogo" />
+
+    <TextView
+        android:id="@+id/tvNameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_start_entry_field_title"
+        android:layout_marginTop="24dp"
+        android:text="@string/title_registration_name"
+        android:textSize="@dimen/size_title_entry_field"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/etName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvRegistrationTitle" />
+
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_entry_field"
+        android:layout_marginTop="@dimen/margin_top_entry_field"
+        android:background="@drawable/et_background_entry_field"
+        android:gravity="center"
+        android:hint="@string/hint_registration_name"
+        app:layout_constraintBottom_toTopOf="@id/tvSurnameTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvNameTitle" />
+
+    <TextView
+        android:id="@+id/tvSurnameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_start_entry_field_title"
+        android:layout_marginTop="32dp"
+        android:text="@string/title_registration_surname"
+        android:textSize="@dimen/size_title_entry_field"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/etSurname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etName" />
+
+    <EditText
+        android:id="@+id/etSurname"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_entry_field"
+        android:layout_marginTop="@dimen/margin_top_entry_field"
+        android:background="@drawable/et_background_entry_field"
+        android:gravity="center"
+        android:hint="@string/hint_registration_surname"
+        app:layout_constraintBottom_toTopOf="@id/btnRegistration"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSurnameTitle" />
+
+    <ImageView
+        android:id="@+id/btnRegistration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/btn_next_selector"
+        android:padding="@dimen/padding_button_next"
+        android:src="@drawable/ic_baseline_arrow_forward_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etSurname" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

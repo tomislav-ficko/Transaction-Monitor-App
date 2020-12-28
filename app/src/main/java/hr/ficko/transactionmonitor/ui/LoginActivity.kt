@@ -1,6 +1,41 @@
 package hr.ficko.transactionmonitor.ui
 
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import androidx.activity.viewModels
+import dagger.hilt.android.AndroidEntryPoint
+import hr.ficko.transactionmonitor.databinding.ActivityLoginBinding
+import hr.ficko.transactionmonitor.ui.fragments.PinEntryFragment
+import hr.ficko.transactionmonitor.viewModels.UserViewModel
 
-class LoginActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class LoginActivity : BaseActivity() {
+
+    private val viewModel by viewModels<UserViewModel>()
+    private lateinit var binding: ActivityLoginBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        inflateLayout()
+        displayLoginFragment()
+    }
+
+    fun loginSuccessful() {
+        navigateToMainActivity(this)
+    }
+
+    private fun inflateLayout() {
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+    }
+
+    private fun displayLoginFragment() {
+        supportFragmentManager
+            .beginTransaction()
+            .add(
+                binding.loginContainer.id,
+                PinEntryFragment.newInstance(),
+                "pinEntryFragment"
+            )
+            .commit()
+    }
 }

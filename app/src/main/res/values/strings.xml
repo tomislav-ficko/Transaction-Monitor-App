@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Transaction Monitor</string>
+    <string name="message_registration_negative">Registration failed</string>
+    <string name="message_login_negative">Wrong PIN entered</string>
+    <string name="hint_registration_name">John</string>
+    <string name="title_registration_surname">Surame</string>
+    <string name="hint_registration_surname">Doe</string>
+    <string name="hint_pin">••••</string>
+    <string name="title_registration">Register</string>
+    <string name="title_login">Login</string>
+    <string name="title_registration_name">Name</string>
+    <string name="title_pin_entry">Please enter PIN</string>
+    <string name="title_button_register">Register</string>
+    <string name="title_register_question">Not yet registered?</string>
 </resources>

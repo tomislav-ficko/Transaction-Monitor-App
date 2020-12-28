@@ -1,12 +1,17 @@
 package hr.ficko.transactionmonitor.di
 
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import hr.ficko.transactionmonitor.BuildConfig
 import hr.ficko.transactionmonitor.network.ApiService
+import hr.ficko.transactionmonitor.other.SHARED_PREFERENCES
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -17,6 +22,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun sharedPreferences(@ApplicationContext context: Context): SharedPreferences =
+        context.getSharedPreferences(
+            SHARED_PREFERENCES,
+            MODE_PRIVATE
+        )
 
     @Singleton
     @Provides
