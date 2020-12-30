@@ -10,8 +10,8 @@ import androidx.lifecycle.Observer
 import dagger.hilt.android.AndroidEntryPoint
 import hr.ficko.transactionmonitor.R
 import hr.ficko.transactionmonitor.databinding.FragmentPinEntryBinding
-import hr.ficko.transactionmonitor.ui.LoginActivity
-import hr.ficko.transactionmonitor.ui.RegistrationActivity
+import hr.ficko.transactionmonitor.ui.activities.LoginActivity
+import hr.ficko.transactionmonitor.ui.activities.RegistrationActivity
 import hr.ficko.transactionmonitor.viewModels.UserViewModel
 import timber.log.Timber
 

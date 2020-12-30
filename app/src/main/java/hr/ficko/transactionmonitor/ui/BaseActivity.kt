@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import hr.ficko.transactionmonitor.ui.activities.MainActivity
 import timber.log.Timber
 
 open class BaseActivity : AppCompatActivity() {

@@ -1,9 +1,10 @@
-package hr.ficko.transactionmonitor.ui
+package hr.ficko.transactionmonitor.ui.activities
 
 import android.os.Bundle
 import androidx.activity.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import hr.ficko.transactionmonitor.databinding.ActivityLoginBinding
+import hr.ficko.transactionmonitor.ui.BaseActivity
 import hr.ficko.transactionmonitor.ui.fragments.PinEntryFragment
 import hr.ficko.transactionmonitor.viewModels.UserViewModel
 

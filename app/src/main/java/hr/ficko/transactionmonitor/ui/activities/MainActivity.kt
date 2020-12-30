@@ -1,4 +1,4 @@
-package hr.ficko.transactionmonitor.ui
+package hr.ficko.transactionmonitor.ui.activities
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -17,5 +17,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        initializeRecyclerView()
+    }
+
+    private fun initializeRecyclerView() {
+        TODO("Not yet implemented")
     }
 }

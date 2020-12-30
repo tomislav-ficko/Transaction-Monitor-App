@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:paddingStart="@dimen/padding_side"
-    android:paddingTop="@dimen/padding_side"
-    android:paddingEnd="@dimen/padding_side">
+    android:paddingStart="@dimen/padding_login_side"
+    android:paddingTop="@dimen/padding_login_side"
+    android:paddingEnd="@dimen/padding_login_side">
 
     <ImageView
         android:id="@+id/tvRegistrationLogo"
