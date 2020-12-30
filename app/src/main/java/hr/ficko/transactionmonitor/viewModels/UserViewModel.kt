@@ -73,7 +73,7 @@ class UserViewModel @ViewModelInject constructor(
                     )
                 )
             }
-            VALID -> {
+            NameValidationStatus.VALID -> {
                 persistNames(name, surname)
                 nameValidationLiveData.postValue(
                     NameError(
