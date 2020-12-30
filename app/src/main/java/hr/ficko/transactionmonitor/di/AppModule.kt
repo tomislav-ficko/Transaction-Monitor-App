@@ -12,6 +12,7 @@ import dagger.hilt.components.SingletonComponent
 import hr.ficko.transactionmonitor.BuildConfig
 import hr.ficko.transactionmonitor.network.ApiService
 import hr.ficko.transactionmonitor.other.SHARED_PREFERENCES
+import hr.ficko.transactionmonitor.ui.TransactionListAdapter
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -62,6 +63,10 @@ object AppModule {
     @Singleton
     @Provides
     fun moshi(): Moshi = Moshi.Builder().build()
+
+    @Singleton
+    @Provides
+    fun listAdapter(): TransactionListAdapter = TransactionListAdapter()
 
     @Singleton
     @Provides

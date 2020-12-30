@@ -23,6 +23,6 @@ data class Transaction(
     @Json(name = "id") val transactionId: String,
     @Json(name = "date") val date: String,
     @Json(name = "description") val description: String,
-    @Json(name = "amount") val transactionAmount: String,
+    @Json(name = "amount") val amount: String,
     @Json(name = "type") val type: String?,
 )
