@@ -9,6 +9,7 @@ import hr.ficko.transactionmonitor.other.KEY_NAME
 import hr.ficko.transactionmonitor.other.KEY_PIN
 import hr.ficko.transactionmonitor.other.KEY_SURNAME
 import hr.ficko.transactionmonitor.viewModels.UserViewModel.NameValidationStatus.*
+import hr.ficko.transactionmonitor.viewModels.UserViewModel.PinValidationStatus.*
 import timber.log.Timber
 
 class UserViewModel @ViewModelInject constructor(
@@ -30,13 +31,13 @@ class UserViewModel @ViewModelInject constructor(
 
     fun checkPinValidityAndSave(pin: String) {
         when (pinValidation(pin)) {
-            PinValidationStatus.INCORRECT_LENGTH -> {
+            INCORRECT_LENGTH -> {
                 pinValidationLiveData.postValue(PinError(true, "PIN length incorrect"))
             }
-            PinValidationStatus.NOT_REGISTERED -> {
+            NOT_REGISTERED -> {
                 pinValidationLiveData.postValue(PinError(true, "PIN not registered"))
             }
-            PinValidationStatus.INVALID -> {
+            INVALID -> {
                 pinValidationLiveData.postValue(PinError(true, "PIN incorrect"))
             }
             PinValidationStatus.VALID -> {
@@ -103,14 +104,14 @@ class UserViewModel @ViewModelInject constructor(
 
     private fun pinValidation(pin: String): PinValidationStatus {
         return when {
-            isIncorrectLength(pin) -> {
-                PinValidationStatus.INCORRECT_LENGTH
+            pinIsIncorrectLength(pin) -> {
+                INCORRECT_LENGTH
             }
             registrationNotDone() -> {
-                PinValidationStatus.NOT_REGISTERED
+                NOT_REGISTERED
             }
             pin != getSavedPin() -> {
-                PinValidationStatus.INVALID
+                INVALID
             }
             else -> {
                 PinValidationStatus.VALID
@@ -119,14 +120,42 @@ class UserViewModel @ViewModelInject constructor(
     }
 
     private fun nameValidation(name: String, surname: String): NameValidationStatus {
-        TODO("Not yet implemented")
+        return when {
+            containsNonAlphanumChars(name) -> {
+                NAME_FORBIDDEN_CHAR
+            }
+            containsNonAlphanumChars(surname) -> {
+                SURNAME_FORBIDDEN_CHAR
+            }
+            nameIsIncorrectLength(name) -> {
+                NAME_TOO_LONG
+            }
+            nameIsIncorrectLength(surname) -> {
+                SURNAME_TOO_LONG
+            }
+            name.isEmpty() -> {
+                NAME_EMPTY
+            }
+            surname.isEmpty() -> {
+                SURNAME_EMPTY
+            }
+            else -> {
+                NameValidationStatus.VALID
+            }
+        }
     }
 
     private fun getSavedPin() = sharedPreferences.getString(KEY_PIN, DEFAULT_VALUE)
 
     private fun registrationNotDone() = !sharedPreferences.contains(KEY_PIN)
 
-    private fun isIncorrectLength(pin: String) = pin.length < 4 || pin.length > 6
+    private fun pinIsIncorrectLength(pin: String) = pin.length < 4 || pin.length > 6
+
+    private fun containsNonAlphanumChars(string: String): Boolean =
+        string.filter { it in 'A'..'Z' || it in 'a'..'z' || it in '0'..'9' }
+            .length != string.length
+
+    private fun nameIsIncorrectLength(string: String): Boolean = string.length > 30
 
     enum class PinValidationStatus {
         VALID,
