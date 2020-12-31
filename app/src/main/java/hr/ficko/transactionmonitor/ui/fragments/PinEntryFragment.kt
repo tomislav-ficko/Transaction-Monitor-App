@@ -36,8 +36,13 @@ class PinEntryFragment : Fragment() {
 
         defineButtonActions()
         defineObservers()
+        addNameAndSurnameToTitleIfRegistered()
 
         return inflater.inflate(R.layout.fragment_pin_entry, container, false)
+    }
+
+    private fun addNameAndSurnameToTitleIfRegistered() {
+        viewModel.getSavedNameAndSurname()
     }
 
     private fun defineButtonActions() {
@@ -55,6 +60,11 @@ class PinEntryFragment : Fragment() {
 
     private fun defineObservers() {
         viewModel.pinValidationLiveData.observe(viewLifecycleOwner, validationObserver())
+        viewModel.displayNameLiveData.observe(viewLifecycleOwner, displayNameObserver())
+    }
+
+    private fun displayNameObserver() = Observer<String> { nameAndSurname ->
+        binding.tvTitle.text = "Welcome $nameAndSurname"
     }
 
     private fun validationObserver() = Observer<UserViewModel.PinError> { error ->

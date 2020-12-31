@@ -18,6 +18,7 @@ class UserViewModel @ViewModelInject constructor(
 
     val nameValidationLiveData: MutableLiveData<NameError> = MutableLiveData()
     val pinValidationLiveData: MutableLiveData<PinError> = MutableLiveData()
+    val displayNameLiveData: MutableLiveData<String> = MutableLiveData()
 
     class PinError(
         val occurred: Boolean,
@@ -28,6 +29,12 @@ class UserViewModel @ViewModelInject constructor(
         val occurred: Boolean,
         val reason: String
     )
+
+    fun getSavedNameAndSurname() {
+        val name = sharedPreferences.getString(KEY_NAME, "")
+        val surname = sharedPreferences.getString(KEY_SURNAME, "")
+        displayNameLiveData.postValue("$name $surname")
+    }
 
     fun checkPinValidityAndSave(pin: String) {
         when (pinValidation(pin)) {
