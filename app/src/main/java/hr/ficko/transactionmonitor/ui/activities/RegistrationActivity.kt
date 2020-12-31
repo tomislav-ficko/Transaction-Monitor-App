@@ -1,5 +1,6 @@
 package hr.ficko.transactionmonitor.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import dagger.hilt.android.AndroidEntryPoint
@@ -8,6 +9,7 @@ import hr.ficko.transactionmonitor.ui.BaseActivity
 import hr.ficko.transactionmonitor.ui.fragments.NameEntryFragment
 import hr.ficko.transactionmonitor.ui.fragments.PinEntryFragment
 import hr.ficko.transactionmonitor.viewModels.UserViewModel
+import timber.log.Timber
 
 @AndroidEntryPoint
 class RegistrationActivity : BaseActivity() {
@@ -26,7 +28,7 @@ class RegistrationActivity : BaseActivity() {
     }
 
     fun registrationSuccessful() {
-        navigateToMainActivity(this)
+        navigateToMainActivity()
     }
 
     private fun inflateLayout() {
@@ -43,6 +45,11 @@ class RegistrationActivity : BaseActivity() {
                 "nameEntryFragment"
             )
             .commit()
+    }
+
+    private fun navigateToMainActivity() {
+        Timber.d("Navigating to MainActivity")
+        startActivity(Intent(this, MainActivity::class.java))
     }
 
     private fun displayPinEntryFragment() {

@@ -41,15 +41,15 @@ class PinEntryFragment : Fragment() {
     }
 
     private fun defineButtonActions() {
-        binding.apply {
-            btnNext.setOnClickListener {
-                Timber.d("Button pressed, validating entered PIN")
-                viewModel.checkPinValidityAndSave(etPinEntry.text.toString())
-            }
+        //TODO buttons presses not working for some reason
+        binding.btnNext.setOnClickListener {
+            Timber.d("Button pressed, validating entered PIN")
+            viewModel.checkPinValidityAndSave(binding.etPinEntry.text.toString())
+        }
 
-            btnRegister.setOnClickListener {
-                Timber.d("Button pressed, navigating to registration fragment")
-            }
+        binding.btnRegister.setOnClickListener {
+            Timber.d("Button pressed, navigating to registration fragment")
+            (activity as LoginActivity).openRegistration()
         }
     }
 
