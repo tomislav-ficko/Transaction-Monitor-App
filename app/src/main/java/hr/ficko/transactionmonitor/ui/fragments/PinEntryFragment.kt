@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import hr.ficko.transactionmonitor.R
 import hr.ficko.transactionmonitor.databinding.FragmentPinEntryBinding
@@ -54,7 +55,7 @@ class PinEntryFragment : Fragment() {
 
         binding.btnRegister.setOnClickListener {
             Timber.d("Button pressed, navigating to registration fragment")
-            (activity as LoginActivity).openRegistration()
+            findNavController().navigate(R.id.action_loginFragment_to_nameRegistrationFragment)
         }
     }
 
@@ -70,19 +71,15 @@ class PinEntryFragment : Fragment() {
     private fun validationObserver() = Observer<UserViewModel.PinError> { error ->
         error?.let {
             if (errorNotPresent(it)) {
-                notifyActivityAboutSuccessfulAction()
+                continueToMainActivity()
             } else {
                 //TODO handle errors
             }
         }
     }
 
-    private fun notifyActivityAboutSuccessfulAction() {
-        if (activity is LoginActivity) {
-            (activity as LoginActivity).loginSuccessful()
-        } else if (activity is RegistrationActivity) {
-            (activity as RegistrationActivity).registrationSuccessful()
-        }
+    private fun continueToMainActivity() {
+        findNavController().navigate(R.id.action_pinRegistrationFragment_to_mainActivity)
     }
 
     private fun errorNotPresent(error: UserViewModel.PinError) = !error.occurred

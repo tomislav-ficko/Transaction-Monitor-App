@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import hr.ficko.transactionmonitor.R
 import hr.ficko.transactionmonitor.databinding.FragmentNameEntryBinding
-import hr.ficko.transactionmonitor.ui.activities.RegistrationActivity
 import hr.ficko.transactionmonitor.viewModels.UserViewModel
 import timber.log.Timber
 
@@ -58,15 +58,15 @@ class NameEntryFragment : Fragment() {
     private fun validationObserver() = Observer<UserViewModel.NameError> { error ->
         error?.let {
             if (errorNotPresent(it)) {
-                notifyActivityAboutSuccessfulAction()
+                continueToPinRegistration()
             } else {
                 //TODO handle errors
             }
         }
     }
 
-    private fun notifyActivityAboutSuccessfulAction() {
-        (activity as RegistrationActivity).nameEntrySuccessful()
+    private fun continueToPinRegistration() {
+        findNavController().navigate(R.id.action_nameRegistrationFragment_to_pinRegistrationFragment)
     }
 
     private fun errorNotPresent(error: UserViewModel.NameError) = !error.occurred

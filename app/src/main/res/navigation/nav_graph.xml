@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navgraph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="hr.ficko.transactionmonitor.ui.fragments.PinEntryFragment"
+        android:label="Login Fragment"
+        tools:layout="@layout/fragment_pin_entry" >
+        <action
+            android:id="@+id/action_loginFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+        <action
+            android:id="@+id/action_loginFragment_to_nameRegistrationFragment"
+            app:destination="@id/nameRegistrationFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nameRegistrationFragment"
+        android:name="hr.ficko.transactionmonitor.ui.fragments.NameEntryFragment"
+        android:label="Name Registration Fragment"
+        tools:layout="@layout/fragment_name_entry">
+        <action
+            android:id="@+id/action_nameRegistrationFragment_to_pinRegistrationFragment"
+            app:destination="@id/pinRegistrationFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/pinRegistrationFragment"
+        android:name="hr.ficko.transactionmonitor.ui.fragments.PinEntryFragment"
+        android:label="Pin Registration Fragment"
+        tools:layout="@layout/fragment_pin_entry" >
+        <action
+            android:id="@+id/action_pinRegistrationFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
+
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="hr.ficko.transactionmonitor.ui.activities.MainActivity"
+        android:label="Main Activity"
+        tools:layout="@layout/activity_main" />
+
+</navigation>
