@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -12,6 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import hr.ficko.transactionmonitor.R
 import hr.ficko.transactionmonitor.databinding.FragmentNameEntryBinding
 import hr.ficko.transactionmonitor.viewModels.UserViewModel
+import hr.ficko.transactionmonitor.viewModels.UserViewModel.NameValidationStatus.*
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -19,12 +21,6 @@ class NameEntryFragment : Fragment() {
 
     private val viewModel by viewModels<UserViewModel>()
     private lateinit var binding: FragmentNameEntryBinding
-
-    companion object {
-        fun newInstance(): NameEntryFragment {
-            return NameEntryFragment()
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +39,7 @@ class NameEntryFragment : Fragment() {
         binding.apply {
             btnRegistration.setOnClickListener {
                 Timber.d("Button pressed, validating entered name and surname")
-                viewModel.checkNameValidityAndSave(
+                viewModel.checkNameValidityAndNotifyFragment(
                     etName.text.toString(),
                     etSurname.text.toString()
                 )
@@ -57,17 +53,24 @@ class NameEntryFragment : Fragment() {
 
     private fun validationObserver() = Observer<UserViewModel.NameError> { error ->
         error?.let {
-            if (errorNotPresent(it)) {
-                continueToPinRegistration()
-            } else {
-                //TODO handle errors
+            when (it.reason) {
+                NAME_EMPTY -> showErrorMessage("Name empty")
+                NAME_TOO_LONG -> showErrorMessage("Name must be shorter than 30 chars")
+                NAME_FORBIDDEN_CHAR -> showErrorMessage("Name can only contain alphanum chars")
+                SURNAME_EMPTY -> showErrorMessage("Surname empty")
+                SURNAME_TOO_LONG -> showErrorMessage("Surname must be shorter than 30 chars")
+                SURNAME_FORBIDDEN_CHAR -> showErrorMessage("Surname can only contain alphanum chars")
+                else -> continueToPinRegistration()
             }
         }
     }
 
-    private fun continueToPinRegistration() {
+    private fun continueToPinRegistration() =
         findNavController().navigate(R.id.action_nameRegistrationFragment_to_pinRegistrationFragment)
-    }
 
-    private fun errorNotPresent(error: UserViewModel.NameError) = !error.occurred
+    private fun showErrorMessage(content: String) = Toast.makeText(
+        context,
+        content,
+        Toast.LENGTH_LONG
+    ).show()
 }

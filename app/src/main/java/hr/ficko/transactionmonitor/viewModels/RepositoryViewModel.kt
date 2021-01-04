@@ -17,33 +17,25 @@ class RepositoryViewModel @ViewModelInject constructor(
     private val repository: Repository
 ) : ViewModel() {
 
-    val transactionsLiveData: MutableLiveData<List<Transaction>> = MutableLiveData()
     val accountsLiveData: MutableLiveData<List<Account>> = MutableLiveData()
+    val transactionsLiveData: MutableLiveData<List<Transaction>> = MutableLiveData()
     val errorLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
-    fun loadUserData() {
-        getUserData()
-    }
+    fun loadUserData() = executeRequestAndPersistDataInRepository()
 
-    fun getAccountData() {
-        accountsLiveData.postValue(repository.accounts)
-    }
+    fun getAccountData() = accountsLiveData.postValue(repository.accounts)
 
-    fun getTransactionsForAccount(id: Int) {
+    fun getTransactionsForAccount(id: Int) =
         transactionsLiveData.postValue(repository.accounts[id].transactions)
-    }
 
-    private fun getUserData(): Boolean {
-        var status = false
+    private fun executeRequestAndPersistDataInRepository() =
         viewModelScope.launch(Dispatchers.IO) {
-            status = getResponseSuccessStatus(
+            handleResponse(
                 repository.getUserData()
             )
         }
-        return status
-    }
 
-    private fun getResponseSuccessStatus(response: Response<UserDataResponseModel>?): Boolean {
+    private fun handleResponse(response: Response<UserDataResponseModel>?) {
         if (response == null) {
             Timber.d("Error -> Response is null")
             errorLiveData.postValue(true)
@@ -57,9 +49,7 @@ class RepositoryViewModel @ViewModelInject constructor(
         } else {
             response.body()?.let {
                 repository.accounts = it.accounts
-                return true
             }
         }
-        return false
     }
 }

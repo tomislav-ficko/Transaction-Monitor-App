@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -33,10 +34,10 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         inflateLayout()
         initializeRecyclerView()
-        observeLiveData()
         initializeSpinner()
+        observeLiveData()
 
-        loadUserData()
+        loadUserDataAndPopulateSpinner()
     }
 
     private fun inflateLayout() {
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         setContentView(binding.root)
     }
 
-    private fun initializeRecyclerView() {
+    private fun initializeRecyclerView() =
         binding.rvTransactions.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = listAdapter
@@ -55,7 +56,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 )
             )
         }
-    }
 
     private fun observeLiveData() {
         viewModel.transactionsLiveData.observe(this, transactionObserver())
@@ -68,26 +68,16 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         binding.spnAccountDropdown.onItemSelectedListener = this
     }
 
-    private fun loadUserData() {
+    private fun loadUserDataAndPopulateSpinner() {
         viewModel.loadUserData()
         populateSpinner()
     }
 
-
-    private fun populateSpinner() {
-        viewModel.getAccountData()
-    }
+    private fun populateSpinner() = viewModel.getAccountData()
 
     private fun getTransactionData(id: Int) {
         changeProgressLoaderVisibility()
         viewModel.getTransactionsForAccount(id)
-    }
-
-    private fun transactionObserver() = Observer<List<Transaction>> { data ->
-        data?.let {
-            changeProgressLoaderVisibility()
-            showData(it)
-        }
     }
 
     private fun accountObserver() = Observer<List<Account>> {
@@ -97,22 +87,37 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 addAll(it.map { account -> account.iban })
             }
             val adapter = SpinnerAdapter(this, binding.spnAccountDropdown.id, ibanList)
-            binding.spnAccountDropdown.adapter = adapter
+            binding.spnAccountDropdown.apply {
+                this.adapter = adapter
+                setSelection(0)
+            }
         }
     }
 
-    private fun errorObserver() = Observer<Boolean> {
-
+    private fun transactionObserver() = Observer<List<Transaction>> { data ->
+        data?.let {
+            changeProgressLoaderVisibility()
+            showData(it)
+        }
     }
 
-    private fun showData(data: List<Transaction>) {
+    private fun errorObserver() = Observer<Boolean> { errorOccurred ->
+        if (errorOccurred) {
+            Toast.makeText(
+                applicationContext,
+                "Network problem occurred, data could not be retrieved.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    private fun showData(data: List<Transaction>) =
         listAdapter.apply {
             dataset = data
             notifyDataSetChanged()
         }
-    }
 
-    private fun changeProgressLoaderVisibility() {
+    private fun changeProgressLoaderVisibility() =
         binding.apply {
             if (progressLoader.isVisible) {
                 progressLoader.visibility = ProgressBar.INVISIBLE
@@ -120,7 +125,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 progressLoader.visibility = ProgressBar.VISIBLE
             }
         }
-    }
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         // Skip the first item (hint)

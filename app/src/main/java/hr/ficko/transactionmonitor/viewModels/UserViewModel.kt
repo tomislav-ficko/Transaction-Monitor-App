@@ -20,15 +20,26 @@ class UserViewModel @ViewModelInject constructor(
     val pinValidationLiveData: MutableLiveData<PinError> = MutableLiveData()
     val displayNameLiveData: MutableLiveData<String> = MutableLiveData()
 
-    class PinError(
-        val occurred: Boolean,
-        val reason: PinValidationStatus
-    )
+    class PinError(val occurred: Boolean, val reason: PinValidationStatus)
 
-    class NameError(
-        val occurred: Boolean,
-        val reason: String
-    )
+    enum class PinValidationStatus {
+        VALID,
+        INVALID,
+        INCORRECT_LENGTH,
+        NOT_REGISTERED
+    }
+
+    class NameError(val occurred: Boolean, val reason: NameValidationStatus)
+
+    enum class NameValidationStatus {
+        VALID,
+        NAME_EMPTY,
+        NAME_TOO_LONG,
+        NAME_FORBIDDEN_CHAR,
+        SURNAME_EMPTY,
+        SURNAME_TOO_LONG,
+        SURNAME_FORBIDDEN_CHAR
+    }
 
     fun getSavedNameAndSurname() {
         val name = sharedPreferences.getString(KEY_NAME, "")
@@ -36,56 +47,32 @@ class UserViewModel @ViewModelInject constructor(
         displayNameLiveData.postValue("$name $surname")
     }
 
-    fun checkPinValidityAndSave(pin: String) {
+    fun checkPinValidityAndNotifyFragment(pin: String) {
         when (pinValidation(pin)) {
-            INCORRECT_LENGTH -> {
-                pinValidationLiveData.postValue(PinError(true, INCORRECT_LENGTH))
-            }
-            NOT_REGISTERED -> {
-                pinValidationLiveData.postValue(PinError(true, NOT_REGISTERED))
-            }
-            INVALID -> {
-                pinValidationLiveData.postValue(PinError(true, INVALID))
-            }
-            PinValidationStatus.VALID -> {
+            INCORRECT_LENGTH -> postPinErrorToLiveData(INCORRECT_LENGTH)
+            NOT_REGISTERED -> postPinErrorToLiveData(NOT_REGISTERED)
+            INVALID -> postPinErrorToLiveData(INVALID)
+            else -> {
                 persistPin(pin)
                 pinValidationLiveData.postValue(PinError(false, PinValidationStatus.VALID))
             }
         }
     }
 
-    fun checkNameValidityAndSave(name: String, surname: String) {
+    fun checkNameValidityAndNotifyFragment(name: String, surname: String) {
         when (nameValidation(name, surname)) {
-            NAME_EMPTY, SURNAME_EMPTY -> {
-                nameValidationLiveData.postValue(
-                    NameError(
-                        true,
-                        "Both fields are required"
-                    )
-                )
-            }
-            NAME_TOO_LONG, SURNAME_TOO_LONG -> {
-                nameValidationLiveData.postValue(
-                    NameError(
-                        true,
-                        "Fields must not be longer than 30 characters"
-                    )
-                )
-            }
-            NAME_FORBIDDEN_CHAR, SURNAME_FORBIDDEN_CHAR -> {
-                nameValidationLiveData.postValue(
-                    NameError(
-                        true,
-                        "Fields must contain only alphanumeric characters"
-                    )
-                )
-            }
-            NameValidationStatus.VALID -> {
+            NAME_EMPTY -> postNameErrorToLiveData(NAME_EMPTY)
+            SURNAME_EMPTY -> postNameErrorToLiveData(SURNAME_EMPTY)
+            NAME_TOO_LONG -> postNameErrorToLiveData(NAME_TOO_LONG)
+            SURNAME_TOO_LONG -> postNameErrorToLiveData(SURNAME_TOO_LONG)
+            NAME_FORBIDDEN_CHAR -> postNameErrorToLiveData(NAME_FORBIDDEN_CHAR)
+            SURNAME_FORBIDDEN_CHAR -> postNameErrorToLiveData(SURNAME_FORBIDDEN_CHAR)
+            else -> {
                 persistNames(name, surname)
                 nameValidationLiveData.postValue(
                     NameError(
                         false,
-                        "Names valid"
+                        NameValidationStatus.VALID
                     )
                 )
             }
@@ -111,46 +98,30 @@ class UserViewModel @ViewModelInject constructor(
 
     private fun pinValidation(pin: String): PinValidationStatus {
         return when {
-            pinIsIncorrectLength(pin) -> {
-                INCORRECT_LENGTH
-            }
-            registrationNotDone() -> {
-                NOT_REGISTERED
-            }
-            pin != getSavedPin() -> {
-                INVALID
-            }
-            else -> {
-                PinValidationStatus.VALID
-            }
+            pinIsIncorrectLength(pin) -> INCORRECT_LENGTH
+            registrationNotDone() -> NOT_REGISTERED
+            pin != getSavedPin() -> INVALID
+            else -> PinValidationStatus.VALID
         }
     }
 
     private fun nameValidation(name: String, surname: String): NameValidationStatus {
         return when {
-            containsNonAlphanumChars(name) -> {
-                NAME_FORBIDDEN_CHAR
-            }
-            containsNonAlphanumChars(surname) -> {
-                SURNAME_FORBIDDEN_CHAR
-            }
-            nameIsIncorrectLength(name) -> {
-                NAME_TOO_LONG
-            }
-            nameIsIncorrectLength(surname) -> {
-                SURNAME_TOO_LONG
-            }
-            name.isEmpty() -> {
-                NAME_EMPTY
-            }
-            surname.isEmpty() -> {
-                SURNAME_EMPTY
-            }
-            else -> {
-                NameValidationStatus.VALID
-            }
+            name.isEmpty() -> NAME_EMPTY
+            surname.isEmpty() -> SURNAME_EMPTY
+            nameIsIncorrectLength(name) -> NAME_TOO_LONG
+            nameIsIncorrectLength(surname) -> SURNAME_TOO_LONG
+            containsNonAlphanumChars(name) -> NAME_FORBIDDEN_CHAR
+            containsNonAlphanumChars(surname) -> SURNAME_FORBIDDEN_CHAR
+            else -> NameValidationStatus.VALID
         }
     }
+
+    private fun postPinErrorToLiveData(reason: PinValidationStatus) =
+        pinValidationLiveData.postValue(PinError(true, reason))
+
+    private fun postNameErrorToLiveData(reason: NameValidationStatus) =
+        nameValidationLiveData.postValue(NameError(true, reason))
 
     private fun getSavedPin() = sharedPreferences.getString(KEY_PIN, DEFAULT_VALUE)
 
@@ -163,21 +134,4 @@ class UserViewModel @ViewModelInject constructor(
             .length != string.length
 
     private fun nameIsIncorrectLength(string: String): Boolean = string.length > 30
-
-    enum class PinValidationStatus {
-        VALID,
-        INVALID,
-        INCORRECT_LENGTH,
-        NOT_REGISTERED
-    }
-
-    enum class NameValidationStatus {
-        VALID,
-        NAME_EMPTY,
-        NAME_TOO_LONG,
-        NAME_FORBIDDEN_CHAR,
-        SURNAME_EMPTY,
-        SURNAME_TOO_LONG,
-        SURNAME_FORBIDDEN_CHAR
-    }
 }
