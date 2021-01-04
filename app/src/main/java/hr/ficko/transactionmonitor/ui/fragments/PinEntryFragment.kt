@@ -70,7 +70,7 @@ class PinEntryFragment : Fragment() {
                 INVALID -> showErrorMessage("PIN invalid")
                 INCORRECT_LENGTH -> showErrorMessage("Incorrect PIN length")
                 NOT_REGISTERED -> showErrorMessage("Please register first")
-                else -> continueToMainActivity()
+                else -> continueToMainFragment()
             }
         }
     }
@@ -78,8 +78,8 @@ class PinEntryFragment : Fragment() {
     private fun continueToNameRegistration() =
         findNavController().navigate(R.id.action_loginFragment_to_nameRegistrationFragment)
 
-    private fun continueToMainActivity() =
-        findNavController().navigate(R.id.action_pinRegistrationFragment_to_mainActivity)
+    private fun continueToMainFragment() =
+        findNavController().navigate(R.id.action_pinRegistrationFragment_to_mainFragment)
 
     private fun showErrorMessage(content: String) = Toast.makeText(
         context,

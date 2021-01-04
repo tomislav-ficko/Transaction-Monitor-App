@@ -1,19 +1,17 @@
 package hr.ficko.transactionmonitor.viewModels
 
-import android.content.SharedPreferences
+import android.content.Context
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import hr.ficko.transactionmonitor.other.DEFAULT_VALUE
-import hr.ficko.transactionmonitor.other.KEY_NAME
-import hr.ficko.transactionmonitor.other.KEY_PIN
-import hr.ficko.transactionmonitor.other.KEY_SURNAME
+import dagger.hilt.android.qualifiers.ApplicationContext
+import hr.ficko.transactionmonitor.other.*
 import hr.ficko.transactionmonitor.viewModels.UserViewModel.NameValidationStatus.*
 import hr.ficko.transactionmonitor.viewModels.UserViewModel.PinValidationStatus.*
 import timber.log.Timber
 
 class UserViewModel @ViewModelInject constructor(
-    private val sharedPreferences: SharedPreferences
+    @ApplicationContext private val applicationContext: Context
 ) : ViewModel() {
 
     val nameValidationLiveData: MutableLiveData<NameError> = MutableLiveData()
@@ -42,8 +40,8 @@ class UserViewModel @ViewModelInject constructor(
     }
 
     fun getSavedNameAndSurname() {
-        val name = sharedPreferences.getString(KEY_NAME, "")
-        val surname = sharedPreferences.getString(KEY_SURNAME, "")
+        val name = getSharedPreferences().getString(KEY_NAME, "")
+        val surname = getSharedPreferences().getString(KEY_SURNAME, "")
         displayNameLiveData.postValue("$name $surname")
     }
 
@@ -80,7 +78,7 @@ class UserViewModel @ViewModelInject constructor(
     }
 
     private fun persistNames(name: String, surname: String) {
-        sharedPreferences
+        getSharedPreferences()
             .edit()
             .putString(KEY_NAME, name)
             .putString(KEY_SURNAME, surname)
@@ -89,7 +87,7 @@ class UserViewModel @ViewModelInject constructor(
     }
 
     private fun persistPin(pin: String) {
-        sharedPreferences
+        getSharedPreferences()
             .edit()
             .putString(KEY_PIN, pin)
             .apply()
@@ -123,9 +121,15 @@ class UserViewModel @ViewModelInject constructor(
     private fun postNameErrorToLiveData(reason: NameValidationStatus) =
         nameValidationLiveData.postValue(NameError(true, reason))
 
-    private fun getSavedPin() = sharedPreferences.getString(KEY_PIN, DEFAULT_VALUE)
+    private fun getSharedPreferences() =
+        applicationContext.getSharedPreferences(
+            SHARED_PREFERENCES,
+            Context.MODE_PRIVATE
+        )
 
-    private fun registrationNotDone() = !sharedPreferences.contains(KEY_PIN)
+    private fun getSavedPin() = getSharedPreferences().getString(KEY_PIN, DEFAULT_VALUE)
+
+    private fun registrationNotDone() = !getSharedPreferences().contains(KEY_PIN)
 
     private fun pinIsIncorrectLength(pin: String) = pin.length < 4 || pin.length > 6
 

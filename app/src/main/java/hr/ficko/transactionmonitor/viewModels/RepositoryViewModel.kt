@@ -21,9 +21,7 @@ class RepositoryViewModel @ViewModelInject constructor(
     val transactionsLiveData: MutableLiveData<List<Transaction>> = MutableLiveData()
     val errorLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
-    fun loadUserData() = executeRequestAndPersistDataInRepository()
-
-    fun getAccountData() = accountsLiveData.postValue(repository.accounts)
+    fun loadUserDataAndDeliverAccountData() = executeRequestAndPersistDataInRepository()
 
     fun getTransactionsForAccount(id: Int) =
         transactionsLiveData.postValue(repository.accounts[id].transactions)
@@ -49,7 +47,10 @@ class RepositoryViewModel @ViewModelInject constructor(
         } else {
             response.body()?.let {
                 repository.accounts = it.accounts
+                deliverAccountData()
             }
         }
     }
+
+    private fun deliverAccountData() = accountsLiveData.postValue(repository.accounts)
 }

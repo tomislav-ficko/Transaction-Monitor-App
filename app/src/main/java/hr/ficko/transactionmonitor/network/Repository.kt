@@ -9,7 +9,7 @@ class Repository @Inject constructor(
     private val apiService: ApiService
 ) {
 
-    lateinit var accounts: List<Account>
+    var accounts: List<Account> = listOf()
 
     fun getUserData(): Response<UserDataResponseModel> {
         return apiService.getUserData().execute()
