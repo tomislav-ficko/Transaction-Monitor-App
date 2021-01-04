@@ -22,7 +22,7 @@ class UserViewModel @ViewModelInject constructor(
 
     class PinError(
         val occurred: Boolean,
-        val reason: String
+        val reason: PinValidationStatus
     )
 
     class NameError(
@@ -39,17 +39,17 @@ class UserViewModel @ViewModelInject constructor(
     fun checkPinValidityAndSave(pin: String) {
         when (pinValidation(pin)) {
             INCORRECT_LENGTH -> {
-                pinValidationLiveData.postValue(PinError(true, "PIN length incorrect"))
+                pinValidationLiveData.postValue(PinError(true, INCORRECT_LENGTH))
             }
             NOT_REGISTERED -> {
-                pinValidationLiveData.postValue(PinError(true, "PIN not registered"))
+                pinValidationLiveData.postValue(PinError(true, NOT_REGISTERED))
             }
             INVALID -> {
-                pinValidationLiveData.postValue(PinError(true, "PIN incorrect"))
+                pinValidationLiveData.postValue(PinError(true, INVALID))
             }
             PinValidationStatus.VALID -> {
                 persistPin(pin)
-                pinValidationLiveData.postValue(PinError(false, "PIN correct"))
+                pinValidationLiveData.postValue(PinError(false, PinValidationStatus.VALID))
             }
         }
     }
