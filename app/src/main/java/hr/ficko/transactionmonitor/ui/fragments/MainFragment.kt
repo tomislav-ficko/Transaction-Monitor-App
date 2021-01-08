@@ -1,6 +1,5 @@
 package hr.ficko.transactionmonitor.ui.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +7,10 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -34,12 +33,6 @@ class MainFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private val viewModel by viewModels<RepositoryViewModel>()
     private lateinit var binding: FragmentMainBinding
-    lateinit var mainContext: Context
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mainContext = context
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,9 +44,9 @@ class MainFragment : Fragment(), AdapterView.OnItemSelectedListener {
         defineButtonAction()
         initializeRecyclerView()
         initializeFragment()
-        observeLiveData()
+        observeLiveData(viewLifecycleOwner)
+        loadUserDataAndPopulateSpinner()
 
-//        loadUserDataAndPopulateSpinner()
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
@@ -74,20 +67,14 @@ class MainFragment : Fragment(), AdapterView.OnItemSelectedListener {
             )
         }
 
-    private fun observeLiveData() {
-        viewModel.transactionsLiveData.observe(context as AppCompatActivity, transactionObserver())
-        viewModel.accountsLiveData.observe(context as AppCompatActivity, accountObserver())
-        viewModel.errorLiveData.observe(context as AppCompatActivity, errorObserver())
+    private fun observeLiveData(viewLifecycleOwner: LifecycleOwner) {
+        viewModel.transactionsLiveData.observe(viewLifecycleOwner, transactionObserver())
+        viewModel.accountsLiveData.observe(viewLifecycleOwner, accountObserver())
+        viewModel.errorLiveData.observe(viewLifecycleOwner, errorObserver())
     }
 
-    // TODO throws error: cannot cast FragmentContextWrapper to AppCompatActivity
     private fun initializeFragment() {
-        val adapter =
-            SpinnerAdapter(
-                mainContext,
-                R.layout.support_simple_spinner_dropdown_item,
-                listOf("Select IBAN")
-            )
+        val adapter = createNewSpinnerAdapter(listOf("Select IBAN"))
 
         binding.apply {
             spnAccountDropdown.adapter = adapter
@@ -117,13 +104,17 @@ class MainFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     private fun updateSpinnerAccountData(newIbanList: MutableList<String>) {
-        var adapter =
+        binding.spnAccountDropdown.adapter = createNewSpinnerAdapter(newIbanList)
+    }
+
+    private fun createNewSpinnerAdapter(data: List<String>): SpinnerAdapter? {
+        return activity?.baseContext?.let { baseContext ->
             SpinnerAdapter(
-                context as AppCompatActivity,
+                baseContext,
                 R.layout.support_simple_spinner_dropdown_item,
-                newIbanList
+                data
             )
-        binding.spnAccountDropdown.adapter = adapter
+        }
     }
 
     private fun transactionObserver() = Observer<List<Transaction>> { data ->
@@ -172,3 +163,4 @@ class MainFragment : Fragment(), AdapterView.OnItemSelectedListener {
         // stub
     }
 }
+
