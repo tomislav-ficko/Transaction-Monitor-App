@@ -19,7 +19,7 @@ import hr.ficko.transactionmonitor.viewModels.UserViewModel.PinValidationStatus.
 import timber.log.Timber
 
 @AndroidEntryPoint
-class PinEntryFragment : Fragment() {
+class PinEntryFragment : Fragment(), View.OnClickListener {
 
     private val viewModel by viewModels<UserViewModel>()
     private lateinit var binding: FragmentPinEntryBinding
@@ -31,28 +31,20 @@ class PinEntryFragment : Fragment() {
     ): View? {
         binding = FragmentPinEntryBinding.inflate(layoutInflater)
 
-        defineButtonActions()
+        setupButtonClickListeners()
         defineObservers()
         addNameAndSurnameToTitleIfRegistered()
 
         return inflater.inflate(R.layout.fragment_pin_entry, container, false)
     }
 
+    private fun setupButtonClickListeners() {
+        binding.btnNext.setOnClickListener(this)
+        binding.btnRegister.setOnClickListener(this)
+    }
+
     private fun addNameAndSurnameToTitleIfRegistered() =
         viewModel.getSavedNameAndSurname()
-
-    private fun defineButtonActions() {
-        //TODO check why button presses are not working
-        binding.btnNext.setOnClickListener {
-            Timber.d("Button pressed, validating entered PIN")
-            viewModel.checkPinValidityAndNotifyFragment(binding.etPinEntry.text.toString())
-        }
-
-        binding.btnRegister.setOnClickListener {
-            Timber.d("Button pressed, navigating to registration fragment")
-            continueToNameRegistration()
-        }
-    }
 
     private fun defineObservers() {
         viewModel.pinValidationLiveData.observe(viewLifecycleOwner, validationObserver())
@@ -86,4 +78,17 @@ class PinEntryFragment : Fragment() {
         content,
         Toast.LENGTH_LONG
     ).show()
+
+    override fun onClick(view: View?) {
+        when (view?.id) {
+            binding.btnNext.id -> {
+                Timber.d("Button pressed, validating entered PIN")
+                viewModel.checkPinValidityAndNotifyFragment(binding.etPinEntry.text.toString())
+            }
+            binding.btnRegister.id -> {
+                Timber.d("Button pressed, navigating to registration fragment")
+                continueToNameRegistration()
+            }
+        }
+    }
 }
